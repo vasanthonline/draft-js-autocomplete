@@ -209,7 +209,8 @@ class Autocomplete extends Component {
     // Update state
     this.setState({
       match: newMatch,
-      selectedSuggestion
+      selectedSuggestion,
+      focus: this.props.focus
     });
   }
 
