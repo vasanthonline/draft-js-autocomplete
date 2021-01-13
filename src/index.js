@@ -337,7 +337,7 @@ class Autocomplete extends Component {
     return keyBindingFn ? keyBindingFn(e) : getDefaultKeyBinding(e);
   }
 
-  handleKeyCommand(command) {
+  handleKeyCommand(command, editorState, eventTimestamp) {
     const { handleKeyCommand } = this.props;
 
     if (command === 'add-entity') {
@@ -370,7 +370,7 @@ class Autocomplete extends Component {
       return 'handled';
     }
 
-    return handleKeyCommand ? handleKeyCommand(command) : 'not-handled';
+    return handleKeyCommand ? handleKeyCommand(command, editorState, eventTimestamp) : 'not-handled';
   }
 
   render() {
