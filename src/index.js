@@ -26,10 +26,6 @@ class Autocomplete extends Component {
     autocompletes: PropTypes.array,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
-    onDownArrow: PropTypes.func,
-    onUpArrow: PropTypes.func,
-    onEscape: PropTypes.func,
-    onTab: PropTypes.func,
     keyBindingFn: PropTypes.func,
     handleKeyCommand: PropTypes.func
   };
@@ -59,10 +55,6 @@ class Autocomplete extends Component {
     this.addEntityWithSelectedSuggestion = this.addEntityWithSelectedSuggestion.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
-    this.onDownArrow = this.onDownArrow.bind(this);
-    this.onUpArrow = this.onUpArrow.bind(this);
-    this.onEscape = this.onEscape.bind(this);
-    this.onTab = this.onTab.bind(this);
     this.keyBindingFn= this.keyBindingFn.bind(this);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
@@ -247,10 +239,6 @@ class Autocomplete extends Component {
       onChange,
       onFocus: this.onFocus,
       onBlur: this.onBlur,
-      onDownArrow: this.onDownArrow,
-      onUpArrow: this.onUpArrow,
-      onEscape: this.onEscape,
-      onTab: this.onTab,
       keyBindingFn: this.keyBindingFn,
       handleKeyCommand: this.handleKeyCommand      
     };
@@ -346,79 +334,6 @@ class Autocomplete extends Component {
     }
   }
 
-  onDownArrow(e) {
-    const { focus, match, selectedSuggestion } = this.state;
-
-    // Prevent default if match displayed
-    if (focus && match) {
-      const lastSuggestionIndex = match.suggestions.length > 0 ? match.suggestions.length - 1 : 0;
-      e.preventDefault();
-
-      // Update selectedSuggestion index
-      if (selectedSuggestion < (lastSuggestionIndex)) {
-        this.setState({
-          selectedSuggestion: selectedSuggestion + 1
-        });
-      }
-    }
-
-    if (this.props.onDownArrow) {
-      this.props.onDownArrow(e);
-    }
-  }
-
-  onUpArrow(e) {
-    const { focus, match, selectedSuggestion } = this.state;
-
-    // Prevent default if match displayed
-    if (focus && match) {
-      e.preventDefault();
-
-      // Update selectedSuggestion index
-      if (selectedSuggestion > 0) {
-        this.setState({
-          selectedSuggestion: selectedSuggestion - 1
-        });
-      }
-    }
-
-    if (this.props.onUpArrow) {
-      this.props.onUpArrow(e);
-    }
-  }
-
-  onEscape(e) {
-    const { focus, match } = this.state;
-
-    // Prevent default if match displayed
-    if (focus && match) {
-      e.preventDefault();
-
-      this.setState({
-        match: null,
-        selectedSuggestion: 0
-      })
-    }
-
-    if (this.props.onEscape) {
-      this.props.onEscape(e);
-    }
-  }
-
-  onTab(e) {
-    const { focus, match } = this.state;
-
-    // Prevent default if match displayed
-    if (focus && match) {
-      e.preventDefault();
-      this.addEntityWithSelectedSuggestion();
-    }
-
-    if (this.props.onTab) {
-      this.props.onTab(e);
-    }
-  }
-
   keyBindingFn(e) {
     const { keyBindingFn } = this.props;
     const { focus, match } = this.state;
@@ -426,6 +341,17 @@ class Autocomplete extends Component {
     if (focus && match && e.keyCode === 13) {
       return 'add-entity';
     }
+    if(focus && match && e.key === 'Tab')
+      return 'add-entity';
+    
+    if(focus && match && e.key === 'ArrowUp')
+      return 'up-entity';
+
+    if(focus && match && e.key === 'ArrowDown')
+      return 'down-entity';
+    
+      if(focus && match && e.key === 'Escape')
+      return 'escape-entity';
 
     return keyBindingFn ? keyBindingFn(e) : getDefaultKeyBinding(e);
   }
@@ -435,6 +361,31 @@ class Autocomplete extends Component {
 
     if (command === 'add-entity') {
       this.addEntityWithSelectedSuggestion();
+      return 'handled';
+    } else if(command === 'up-entity') {
+      const { focus, match, selectedSuggestion } = this.state;
+      if (focus && match && selectedSuggestion > 0) {
+        this.setState({
+          selectedSuggestion: selectedSuggestion - 1
+        });
+      }
+      return 'handled';
+    } else if(command === 'down-entity') {
+      const { focus, match, selectedSuggestion } = this.state;
+      const lastSuggestionIndex = match.suggestions.length > 0 ? match.suggestions.length - 1 : 0;
+      if (focus && match && selectedSuggestion < (lastSuggestionIndex)) {
+        this.setState({
+          selectedSuggestion: selectedSuggestion + 1
+        });
+      }
+      return 'handled';
+    } else if(command === 'escape-entity') {
+      const { focus, match }  = this.state;
+      if(focus && match)
+        this.setState({
+          match: null,
+          selectedSuggestion: 0
+        })
       return 'handled';
     }
 
