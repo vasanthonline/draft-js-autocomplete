@@ -86,3 +86,8 @@ Autocomplete accept all the props that draft-js Editor component accept as well 
 ### Example
 
 Check into the `example` folder and its dedicated `README.md`
+
+#### Create a symlink Link for draft-js-autocomplete module
+```
+npm link
+```
