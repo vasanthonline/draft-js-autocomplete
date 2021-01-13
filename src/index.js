@@ -80,6 +80,12 @@ class Autocomplete extends Component {
     // Update match state if editorState change
     // TODO: check for optimization
     if (prevProps.editorState !== this.props.editorState) {
+      const { editorState, onChange } = this.props;
+      if(!editorState.getDecorator()) {
+        const decorator = this.getDecorator();
+        const newEditorState = EditorState.set(editorState, { decorator });
+        onChange(newEditorState);
+      }
       this.updateMatch();
     }
   }

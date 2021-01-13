@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { Editor, EditorState } from 'draft-js';
 import Autocomplete from 'draft-js-autocomplete';
+import PropTypes from 'prop-types';
 
 import 'draft-js/dist/Draft.css';
 
@@ -11,7 +12,12 @@ import hashtag from './autocompletes/hashtag';
 import './autocompletes/mention.css';
 import './autocompletes/hashtag.css';
 
+import { stateFromHTML } from "draft-js-import-html";
+
 class App extends Component {
+  static propTypes = {
+    content: PropTypes.string,
+  }
 
   autocompletes = [
     mention,
@@ -22,7 +28,14 @@ class App extends Component {
     super(props);
 
     this.state = {
-      editorState: EditorState.createEmpty()
+      editorState: EditorState.createWithContent(stateFromHTML(props.content ?? ''))
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.content != this.props.content) {
+      const updatedEditorState = EditorState.createWithContent(stateFromHTML(this.props.content ?? ''))
+      this.setState({ editorState:updatedEditorState  })
     }
   }
 

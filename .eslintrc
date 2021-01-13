@@ -12,7 +12,8 @@
     "node": true
   },
   "rules": {
-    "no-console": 1
+    "no-console": 1,
+    "no-unused-vars": "warn"
   },
   "settings": {
     "node": {
