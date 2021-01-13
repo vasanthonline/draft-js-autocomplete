@@ -1,6 +1,6 @@
 # Draft JS Autocomplete
 
-This component provide you an easy and quickly way to add autocompletion to [draft-js v0.10](https://draftjs.org/).
+This component provide you an easy and quickly way to add autocompletion to [draft-js v0.11.7](https://draftjs.org/).
 
 ## Installation
 

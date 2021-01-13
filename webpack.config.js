@@ -1,40 +1,38 @@
 const path = require('path');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const src = path.resolve(__dirname, 'src');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
-  entry: [
-    'babel-polyfill',
-    './src/index.js'
-  ],
-  output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'dist'),
-    libraryTarget: 'commonjs2'
+  entry: {
+    main: "./src/index.js"
   },
+  mode: process.env.NODE_ENV === 'production' ?
+    'production' : 'development',
+  resolve: {
+    extensions: ['.jsx', '.tsx', '.ts', '.scss', '.css', '.js'],
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'index.js',
+    library: 'draft-js-autocomplete',
+    libraryTarget: 'umd'
+  },
+  plugins: [new ESLintPlugin({
+    context: src,
+    extensions: ['js', 'jsx', 'mjs'],
+    formatter: eslintFormatter,
+    eslintPath: require.resolve('eslint'),
+  })],
   module: {
     rules: [
-      {
-        test: /\.(js|jsx|mjs)$/,
-        include: src,
-        enforce: 'pre',
-        use: [
-          {
-            options: {
-              formatter: eslintFormatter,
-              eslintPath: require.resolve('eslint'),
-            },
-            loader: require.resolve('eslint-loader'),
-          },
-        ],
-      },
       {
         test: /\.jsx?$/,
         include: src,
         use: {
           loader: require.resolve('babel-loader'),
           options: {
-            cacheDirectory: true,
+            cacheDirectory: true
           },
         }
       }
@@ -67,4 +65,4 @@ module.exports = {
       root: "draft-js"
     }
   }
-};
+}

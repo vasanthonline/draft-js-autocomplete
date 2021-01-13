@@ -17,6 +17,9 @@
   "settings": {
     "node": {
       "extensions": [".js", ".jsx"]
+    },
+    "react": {
+      "version": "detect"
     }
   }
 }

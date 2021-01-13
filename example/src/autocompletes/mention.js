@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 const users = [
   {
@@ -35,7 +36,11 @@ const Mention = ({ children }) => (
   <span className="Mention">{children}</span>
 );
 
-const List = ({ display, children, ...positions }) => {
+Mention.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element)
+}
+
+const List = ({ children, ...positions }) => {
   const styles = {
     top: positions.bottom,
     left: positions.left
@@ -44,6 +49,12 @@ const List = ({ display, children, ...positions }) => {
     <ul className="MentionList" style={styles}>{children}</ul>
   );
 };
+
+List.propTypes = {
+  display: PropTypes.bool,
+  children: PropTypes.arrayOf(PropTypes.element),
+  positions: PropTypes.object
+}
 
 const Item = ({ item, current, onClick }) => {
   let classNames = "MentionListItem";
@@ -55,6 +66,12 @@ const Item = ({ item, current, onClick }) => {
     </li>
   );
 };
+
+Item.propTypes = {
+  item: PropTypes.object,
+  current: PropTypes.bool,
+  onClick: PropTypes.func
+}
 
 const mention = {
   prefix: '@',
