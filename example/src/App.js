@@ -26,7 +26,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-
+    this.editorRef = React.createRef();
     this.state = {
       editorState: EditorState.createWithContent(stateFromHTML(props.content ?? ''))
     }
@@ -43,15 +43,24 @@ class App extends Component {
     this.setState({ editorState })
   };
 
+  focusEditor = ()  => {
+    this.editorRef.current?.focus()
+    this.setState({focus: true})
+  }
+
+  blurEditor = ()  => {
+    this.setState({focus: false})
+  }
+
   render() {
     const { editorState } = this.state;
 
     return (
       <React.Fragment>
         <h1 className="Title">Draft-JS Autocomplete example</h1>
-        <div className="Editor">
-          <Autocomplete editorState={editorState} onChange={this.onChange} autocompletes={this.autocompletes}>
-            <Editor />
+        <div className="Editor" onClick={this.focusEditor.bind(this)}>
+          <Autocomplete editorState={editorState} focus={this.state.focus} onChange={this.onChange} autocompletes={this.autocompletes}>
+            <Editor ref={this.editorRef} onBlur={this.blurEditor.bind(this)} />
           </Autocomplete>
         </div>
       </React.Fragment>

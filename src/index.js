@@ -24,10 +24,9 @@ class Autocomplete extends Component {
     children: PropTypes.element.isRequired,
     onChange: PropTypes.func.isRequired,
     autocompletes: PropTypes.array,
-    onFocus: PropTypes.func,
-    onBlur: PropTypes.func,
     keyBindingFn: PropTypes.func,
-    handleKeyCommand: PropTypes.func
+    handleKeyCommand: PropTypes.func,
+    focus: PropTypes.bool
   };
 
   static defaultProps = {
@@ -38,7 +37,7 @@ class Autocomplete extends Component {
     super(props);
 
     this.state = {
-      focus: false, // Boolean to know if editor has focus or not
+      focus: props.focus || false, // Boolean to know if editor has focus or not
       matches: {}, // All matches found per content block and per autocomplete type
       match: null, // Current match
       selectedSuggestion: 0
@@ -53,8 +52,6 @@ class Autocomplete extends Component {
     this.buildSuggestionsList = this.buildSuggestionsList.bind(this);
     this.onSuggestionClick = this.onSuggestionClick.bind(this);
     this.addEntityWithSelectedSuggestion = this.addEntityWithSelectedSuggestion.bind(this);
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
     this.keyBindingFn= this.keyBindingFn.bind(this);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
@@ -80,6 +77,10 @@ class Autocomplete extends Component {
       }
       this.updateMatch();
     }
+    if(this.state.focus !== this.props.focus)
+      this.setState({
+        focus: this.props.focus
+      })
   }
 
   /**
@@ -311,26 +312,6 @@ class Autocomplete extends Component {
       const newEditorState = addEntityToEditorState(editorState, item, match);
       this.resetMatch();
       onChange(newEditorState);
-    }
-  }
-
-  onFocus(e) {
-    this.setState({
-      focus: true
-    });
-
-    if (this.props.onFocus) {
-      this.props.onFocus(e);
-    }
-  }
-
-  onBlur(e) {
-    this.setState({
-      focus: false
-    });
-
-    if (this.props.onBlur) {
-      this.props.onBlur(e);
     }
   }
 
